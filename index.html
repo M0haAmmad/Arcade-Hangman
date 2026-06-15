@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A premium, state-of-the-art Neo-Brutalist Arcade Hangman game with single-player and competitive 2-player modes featuring animated SVG gallows and interactive sound effects.">
+  <title>Arcade Hangman - 1 & 2 Player Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-3d-grid-container">
+    <div class="grid-floor"></div>
+    
+    <div class="cube cube-p1" style="left: 8%; top: 12%; animation-duration: 18s;">
+      <div class="cube-face front"></div>
+      <div class="cube-face back"></div>
+      <div class="cube-face right"></div>
+      <div class="cube-face left"></div>
+      <div class="cube-face top"></div>
+      <div class="cube-face bottom"></div>
+    </div>
+    
+    <div class="cube cube-p2" style="right: 10%; top: 18%; animation-duration: 24s;">
+      <div class="cube-face front"></div>
+      <div class="cube-face back"></div>
+      <div class="cube-face right"></div>
+      <div class="cube-face left"></div>
+      <div class="cube-face top"></div>
+      <div class="cube-face bottom"></div>
+    </div>
+
+    <div class="cube cube-neutral" style="left: 12%; top: 65%; animation-duration: 15s;">
+      <div class="cube-face front"></div>
+      <div class="cube-face back"></div>
+      <div class="cube-face right"></div>
+      <div class="cube-face left"></div>
+      <div class="cube-face top"></div>
+      <div class="cube-face bottom"></div>
+    </div>
+
+    <div class="cube cube-p1" style="right: 8%; top: 58%; animation-duration: 20s;">
+      <div class="cube-face front"></div>
+      <div class="cube-face back"></div>
+      <div class="cube-face right"></div>
+      <div class="cube-face left"></div>
+      <div class="cube-face top"></div>
+      <div class="cube-face bottom"></div>
+    </div>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <header class="game-header">
+      <div style="display: flex; align-items: center; gap: 0.8rem;">
+        <button id="back-btn" class="icon-btn hidden" title="Back to Setup" aria-label="Back to Setup">
+          <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </button>
+        <h1 class="game-title" id="main-title">ARCADE <span class="highlight">HANGMAN</span></h1>
+      </div>
+      <div class="header-controls">
+        <button id="rules-btn" class="icon-btn" title="How to Play" aria-label="How to play">
+          <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-6h2v6zm0-8h-2V8h2v2z"/></svg>
+        </button>
+        <button id="sound-btn" class="icon-btn" title="Toggle Sound" aria-label="Toggle Sound">
+          <svg id="sound-on-icon" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+          <svg id="sound-off-icon" viewBox="0 0 24 24" width="24" height="24" class="hidden"><path fill="currentColor" d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="game-main-content">
+      
+      <section id="setup-screen" class="game-card setup-card">
+        <h2 class="card-subtitle">Select Game Mode</h2>
+        
+        <div class="mode-selector">
+          <button id="mode-1p" class="btn btn-primary active" data-mode="1player">
+            <span class="btn-icon">👤</span> 1 Player
+          </button>
+          <button id="mode-2p" class="btn btn-primary" data-mode="2player">
+            <span class="btn-icon">👥</span> 2 Player
+          </button>
+        </div>
+
+        <div class="name-inputs-container">
+          <div class="input-group" id="p1-name-group">
+            <label for="p1-name-input">Player Name</label>
+            <input type="text" id="p1-name-input" value="Player 1" placeholder="Enter name..." maxlength="12" autocomplete="off">
+          </div>
+          <div class="input-group hidden" id="p2-name-group">
+            <label for="p2-name-input">Player 2 Name</label>
+            <input type="text" id="p2-name-input" value="Player 2" placeholder="Enter name..." maxlength="12" autocomplete="off">
+          </div>
+        </div>
+
+        <div id="setup-2p-source" class="option-group hidden">
+          <h3>Word Selection</h3>
+          <div class="segmented-control" id="word-source-control">
+            <button class="segment-btn active" data-source="computer">Computer Word</button>
+            <button class="segment-btn" data-source="custom">Custom Word</button>
+          </div>
+        </div>
+
+        <div id="setup-2p-custom-mode" class="option-group hidden">
+          <h3>Challenge Type</h3>
+          <div class="segmented-control" id="custom-mode-control">
+            <button class="segment-btn active" data-custom-mode="one-writer">One Writer (Pass & Play)</button>
+            <button class="segment-btn" data-custom-mode="both-writers">Both Writers (Dual Challenge)</button>
+          </div>
+        </div>
+
+        <div class="option-group">
+          <h3>Select Category</h3>
+          <div class="category-grid" id="category-grid">
+          </div>
+        </div>
+
+        <div id="difficulty-group" class="option-group">
+          <h3>Difficulty</h3>
+          <div class="segmented-control" id="difficulty-control">
+            <button class="segment-btn" data-diff="easy">Easy</button>
+            <button class="segment-btn active" data-diff="medium">Medium</button>
+            <button class="segment-btn" data-diff="hard">Hard</button>
+          </div>
+        </div>
+
+        <button id="start-game-btn" class="btn btn-large btn-glow">LAUNCH GAME</button>
+      </section>
+
+      <section id="game-screen" class="game-card gameplay-card hidden">
+        <div class="game-info-bar">
+          <div class="stat-box" id="stat-category">
+            <span class="stat-label">Category</span>
+            <span class="stat-value" id="info-category">Science</span>
+          </div>
+          <div class="turn-announcement" id="turn-announcement">
+            <span>READY TO PLAY</span>
+          </div>
+          <div class="stat-box" id="stat-score">
+            <span class="stat-label" id="score-label">Score</span>
+            <span class="stat-value" id="info-score">Wins: 0</span>
+          </div>
+        </div>
+
+        <div class="play-area" id="play-area">
+          
+          <div class="hangman-container p1-scaffold" id="p1-container">
+            <div class="player-label" id="p1-label">Player 1</div>
+            <div class="player-category-label hidden" id="p1-cat-label">Category: Preset</div>
+            <svg class="hangman-svg" viewBox="0 0 200 250" id="svg-p1">
+              <line class="gallows-part scaffold" x1="20" y1="230" x2="180" y2="230" />
+              <line class="gallows-part scaffold" x1="60" y1="230" x2="60" y2="20" />
+              <line class="gallows-part scaffold" x1="60" y1="20" x2="130" y2="20" />
+              <line class="gallows-part scaffold" x1="130" y1="20" x2="130" y2="50" />
+              <line class="gallows-part scaffold support" x1="60" y1="50" x2="90" y2="20" />
+
+              <circle class="body-part p1-part head" cx="130" cy="70" r="20" />
+              <line class="body-part p1-part body-line" x1="130" y1="90" x2="130" y2="150" />
+              <line class="body-part p1-part arm-l" x1="130" y1="110" x2="95" y2="130" />
+              <line class="body-part p1-part arm-r" x1="130" y1="110" x2="165" y2="130" />
+              <line class="body-part p1-part leg-l" x1="130" y1="150" x2="100" y2="205" />
+              <line class="body-part p1-part leg-r" x1="130" y1="150" x2="160" y2="205" />
+            </svg>
+            <div class="mistake-counter" id="p1-mistakes-counter">Mistakes: 0/6</div>
+            <div class="word-display word-display-side hidden" id="word-display-p1"></div>
+          </div>
+
+          <div class="word-display-container">
+            <div class="word-display" id="word-display">
+            </div>
+            
+            <div class="action-buttons-middle">
+              <button id="hint-btn" class="btn btn-secondary btn-small">
+                <span>💡</span> Hint (<span id="hint-count">3</span>)
+              </button>
+            </div>
+          </div>
+
+          <div class="hangman-container p2-scaffold hidden" id="p2-container">
+            <div class="player-label" id="p2-label">Player 2</div>
+            <div class="player-category-label hidden" id="p2-cat-label">Category: Preset</div>
+            <svg class="hangman-svg" viewBox="0 0 200 250" id="svg-p2">
+              <line class="gallows-part scaffold" x1="20" y1="230" x2="180" y2="230" />
+              <line class="gallows-part scaffold" x1="60" y1="230" x2="60" y2="20" />
+              <line class="gallows-part scaffold" x1="60" y1="20" x2="130" y2="20" />
+              <line class="gallows-part scaffold" x1="130" y1="20" x2="130" y2="50" />
+              <line class="gallows-part scaffold support" x1="60" y1="50" x2="90" y2="20" />
+
+              <circle class="body-part p2-part head" cx="130" cy="70" r="20" />
+              <line class="body-part p2-part body-line" x1="130" y1="90" x2="130" y2="150" />
+              <line class="body-part p2-part arm-l" x1="130" y1="110" x2="95" y2="130" />
+              <line class="body-part p2-part arm-r" x1="130" y1="110" x2="165" y2="130" />
+              <line class="body-part p2-part leg-l" x1="130" y1="150" x2="100" y2="205" />
+              <line class="body-part p2-part leg-r" x1="130" y1="150" x2="160" y2="205" />
+            </svg>
+            <div class="mistake-counter" id="p2-mistakes-counter">Mistakes: 0/6</div>
+            <div class="word-display word-display-side hidden" id="word-display-p2"></div>
+          </div>
+
+        </div>
+
+        <div class="keyboards-wrapper" id="keyboards-deck">
+          <div class="keyboard-container" id="keyboard-p1"></div>
+          <div class="keyboard-container" id="keyboard-p2"></div>
+        </div>
+
+        <div class="game-control-bar">
+          <button id="menu-btn" class="btn btn-secondary">Main Menu</button>
+          <button id="reset-btn" class="btn btn-secondary">Reset Score</button>
+          <button id="next-word-btn" class="btn btn-primary">Next Game</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="custom-word-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-panel" style="max-width: 500px;">
+      <h2 id="custom-word-title">Enter Secret Word</h2>
+      <p id="custom-word-prompt" style="color: var(--color-text-dim); margin-bottom: 1.5rem; line-height: 1.4;">Player 1, write a word for Player 2 to guess!</p>
+      
+      <div class="option-group" style="text-align: left; margin-bottom: 1.2rem;">
+        <label for="modal-custom-word-input" style="display: block; font-family: var(--font-title); font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">Secret Word</label>
+        <div class="input-wrapper">
+          <input type="password" id="modal-custom-word-input" maxlength="20" placeholder="Type secret word..." autocomplete="off">
+          <button id="modal-toggle-word-visibility" class="visibility-btn" aria-label="Toggle word visibility">👁️</button>
+        </div>
+      </div>
+
+      <div id="modal-category-group" class="option-group" style="text-align: left; margin-bottom: 1.8rem;">
+        <label for="modal-custom-category-input" style="display: block; font-family: var(--font-title); font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">Category / Clue</label>
+        <input type="text" id="modal-custom-category-input" maxlength="18" placeholder="e.g. Movies, Food, Sports..." autocomplete="off" style="width: 100%; background: #171520; border: 2.5px solid var(--color-black); border-radius: 8px; padding: 0.85rem 1rem; color: var(--color-white); font-family: var(--font-body); font-size: 1.15rem; outline: none; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5), 3px 3px 0px var(--color-black);">
+      </div>
+
+      <button id="submit-custom-word-btn" class="btn btn-large btn-glow">SUBMIT & START</button>
+    </div>
+  </div>
+
+  <div id="rules-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-panel">
+      <button class="modal-close" id="close-rules-btn" aria-label="Close modal">&times;</button>
+      <h2>Arcade Hangman Rules</h2>
+      <div class="rules-body">
+        <h3>👤 1 Player Mode</h3>
+        <p>Guess the word chosen by the computer letter by letter. You can make up to <strong>6 incorrect guesses</strong> before you get hung. Use the Hint button if you get stuck!</p>
+        
+        <h3>👥 2 Player (Computer Word)</h3>
+        <p>A competitive turn-based battle! Both players take turns guessing letters of a word generated by the computer. Correct guess lets you continue, incorrect guess adds a part to your scaffold and passes the turn.</p>
+        
+        <h3>👥 2 Player (Custom Word)</h3>
+        <p>Write words for each other! In each round, one player enters a secret word and custom category behind a hidden prompt, and the other player tries to guess it. If the guesser gets hung, the writer wins the round!</p>
+      </div>
+      <button class="btn btn-primary modal-ok-btn" id="rules-ok-btn">GOT IT</button>
+    </div>
+  </div>
+
+  <div id="game-over-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-panel" id="game-over-content">
+      <h2 id="modal-status-title">VICTORY</h2>
+      <p id="modal-status-text">You successfully guessed the word!</p>
+      
+      <div class="modal-word-reveal">
+        <span class="label">The word was:</span>
+        <span class="value" id="modal-revealed-word">QUANTUM</span>
+      </div>
+
+      <div class="modal-stats" id="modal-stats-list">
+      </div>
+
+      <div class="modal-actions" style="grid-template-columns: 1fr;">
+        <button id="modal-continue-btn" class="btn btn-primary btn-glow" style="margin-bottom: 0.5rem; background: var(--color-success); border-color: var(--color-black);">KEEP PLAYING (CONTINUE)</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+          <button id="modal-reset-btn" class="btn btn-secondary">RESET MATCH</button>
+          <button id="modal-menu-btn" class="btn btn-secondary">MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="words.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
